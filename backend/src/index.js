@@ -5,6 +5,13 @@ const bcrypt = require('bcrypt');
 const { connectDB, sequelize } = require('./config/database');
 const User = require('./models/user');
 const cors = require('cors');
+const { getInitialRecommendations, getPersonalizedRecommendations } = require('./config/groq');
+const UserBook = require('./models/userbooks');
+const Book = require('./models/book');
+
+require('./models/associations');
+const userBookRoutes = require('./routes/userBookRoutes');
+
 
 dotenv.config();
 connectDB();
@@ -91,7 +98,10 @@ app.post("/login", async (req, res) => {
     const isPasswordCorrect = await bcrypt.compare(password, user.password);
 
     if (isPasswordCorrect) {
-      res.json({ success: true });
+      res.json({ 
+        success: true ,
+        userId: user.id
+      });
     } else {
       res.json({ success: false, message: "Pasahitza ez da zuzena" });
     }
@@ -101,8 +111,65 @@ app.post("/login", async (req, res) => {
   }
 });
 
+app.post('/recommendations', async (req, res) => {
+  const { userId } = req.body;
+
+  try {
+    const user = await User.findByPk(userId);
+    if (!user) return res.status(404).json({ success: false, message: 'User not found' });
+
+    let genres = user.favoriteGenres;
+    if (typeof genres === 'string') {
+      try {
+        genres = JSON.parse(genres);
+      } catch {
+        return res.status(400).json({ success: false, message: "Invalid genres format" });
+      }
+    }
+
+    const allUserBooks = await UserBook.findAll({
+      where: { userId },
+      include: [{
+        model: Book,
+        attributes: ['id', 'title']  
+      }]
+    });
+
+    const likedBooks = allUserBooks
+      .filter(ub => ub.status === 'read_liked')
+      .map(ub => ub.Book?.title);
+
+    const dislikedBooks = allUserBooks
+      .filter(ub => ub.status === 'read_disliked')
+      .map(ub => ub.Book?.title);
+
+    const wantToRead = allUserBooks
+      .filter(ub => ub.status === 'want_to_read')
+      .map(ub => ub.Book?.title);
+
+    const notInterested = allUserBooks
+      .filter(ub => ub.status === 'not_interested')
+      .map(ub => ub.Book?.title);
+
+    const hasHistory = likedBooks.length || dislikedBooks.length || wantToRead.length || notInterested.length;
+
+    const books = hasHistory
+      ? await getPersonalizedRecommendations(user.age, genres, likedBooks, dislikedBooks, wantToRead, notInterested)
+      : await getInitialRecommendations(user.age, genres);
+
+    res.json({ success: true, books });
+  } catch (err) {
+    console.error("Error al recomendar libros:", err.message);
+    res.status(500).json({ success: false, message: "Fallo al obtener recomendaciones." });
+  }
+});
+
+app.use('/user-books', userBookRoutes);
 
 const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);
+
 });
+
+
