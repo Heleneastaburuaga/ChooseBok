@@ -9,7 +9,8 @@ async function getInitialRecommendations(age, genres) {
     const prompt = `You are a book recommender. Based on the following data:
     Age: ${age}
     Favorite genres: ${genres.join(", ")}
-    Recommend a list of 10 books. Only respond with the titles, one per line. Do not include numbers or quotes. No descriptions. Just titles.`;
+    -Note: The favorite genres are independent. Recommendations can include books from any of these genres individually or in combination.
+    Recommend a list of 5 books. Only respond with the titles, one per line. Do not include numbers or quotes. No descriptions. Just titles.`;
   try {
     const response = await openai.chat.completions.create({
       model: 'llama-3.3-70b-versatile',
@@ -36,31 +37,35 @@ async function getPersonalizedRecommendations(age, genres, likedBooks, dislikedB
   console.log("Not Interested:", notInterested);
   const prompt = `You are a book recommender AI.
 
-User profile:
-- Age: ${age}
-- Favorite genres: ${genres.join(", ")}
+    User profile:
+    - Age: ${age}
+    - Favorite genres: ${genres.join(", ")}
+    -Note: The favorite genres are independent. Recommendations can include books from any of these genres individually or in combination.
 
-Books they liked:
-${likedBooks.join("\n")}
+    Books they liked:
+    ${likedBooks.join("\n")}
 
-Books they disliked:
-${dislikedBooks.join("\n")}
+    Books they disliked:
+    ${dislikedBooks.join("\n")}
 
-Books they want to read:
-${wantToRead.join("\n")}
+    Books they want to read:
+    ${wantToRead.join("\n")}
 
-Books they are not interested in:
-${notInterested.join("\n")}
+    Books they are not interested in:
+    ${notInterested.join("\n")}
 
 
-Based on this information, recommend 5 new book titles the user might like. DO NOT RECOMMEND ANY OF THESE BOOKS AGAIN.
-Only respond with the titles, one per line. No numbers, no quotes, no descriptions. Just titles.`;
+    Based on this information, recommend exactly 5 new book titles the user might like:
+    - Do NOT include any books already mentioned above.
+    - Only include standalone books or the first book in a series (no sequels or later books).
+    - Include 4 books aligned with their preferred genres and 1 that slightly deviates from their usual taste, based on their age.
+    - Return ONLY the titles. No numbers, no bullet points, no quotes, no summaries — just one title per line.`
 
   try {
     const response = await openai.chat.completions.create({
       model: 'llama-3.3-70b-versatile',
       messages: [{ role: 'user', content: prompt }],
-      temperature: 0.7,
+      temperature: 0.3,
     });
     const text = response.choices[0].message.content;
     const titles = text
