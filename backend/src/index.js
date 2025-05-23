@@ -37,16 +37,14 @@ app.use(express.urlencoded({ extended: false }));
 app.post("/signup", async (req, res) => {
   const { username, password, passwordtwo, fullName, age } = req.body;
 
-  console.log("Datos recibidos:", { username, password, passwordtwo, fullName, age });
-
   if (password !== passwordtwo) {
-    return res.json({ success: false, message: "Pasahitzak ez dira berdinak" });
+    return res.json({ success: false, message: "Different passwords" });
   }
 
   try {
     const existingUser = await User.findOne({ where: { name: username } });
     if (existingUser) {
-      return res.json({ success: false, message: "Izen hau erregistratuta dago" });
+      return res.json({ success: false, message: "This name is already registered" });
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
@@ -60,8 +58,8 @@ app.post("/signup", async (req, res) => {
     res.json({ success: true, userId: user.id });  
     } 
     catch (err) {
-      console.error("Errorea signup:", err.message);
-      res.json({ success: false, message: "Errore bat gertatu da." });
+      console.error("Sign-up error:", err.message);
+      res.json({ success: false, message: "An error has occurred" });
     }
 });
 
@@ -73,7 +71,7 @@ app.patch("/users/:username", async (req, res) => {
     const user = await User.findOne({ where: { name: username } });
 
     if (!user) {
-      return res.status(404).json({ success: false, message: "Usuario no encontrado" });
+      return res.status(404).json({ success: false, message: "User not found" });
     }
 
     user.favoriteGenres = favoriteGenres;
@@ -81,8 +79,8 @@ app.patch("/users/:username", async (req, res) => {
 
     res.json({ success: true });
   } catch (err) {
-    console.error('Error al actualizar los géneros favoritos: ', err.message);
-    res.status(500).json({ success: false, message: "Error al actualizar los géneros favoritos." });
+    console.error('Error updating favorite genres: ', err.message);
+    res.status(500).json({ success: false, message: "Error updating favorite genres" });
   }
 });
 
@@ -92,7 +90,7 @@ app.post("/login", async (req, res) => {
   try {
     const user = await User.findOne({ where: { name: username } });
     if (!user) {
-      return res.json({ success: false, message: "Erabiltzailea ez da existitzen" });
+      return res.json({ success: false, message: "The user does not exist" });
     }
 
     const isPasswordCorrect = await bcrypt.compare(password, user.password);
@@ -103,11 +101,11 @@ app.post("/login", async (req, res) => {
         userId: user.id
       });
     } else {
-      res.json({ success: false, message: "Pasahitza ez da zuzena" });
+      res.json({ success: false, message: "The password is incorrect" });
     }
   } catch (err) {
-    console.error("Errorea login:", err.message);
-    res.json({ success: false, message: "Errore bat gertatu da." });
+    console.error("Login error:", err.message);
+    res.json({ success: false, message: "An error has occurred" });
   }
 });
 
@@ -159,8 +157,8 @@ app.post('/recommendations', async (req, res) => {
 
     res.json({ success: true, books });
   } catch (err) {
-    console.error("Error al recomendar libros:", err.message);
-    res.status(500).json({ success: false, message: "Fallo al obtener recomendaciones." });
+    console.error("Error recommending books:", err.message);
+    res.status(500).json({ success: false, message: "Failed to get recommendations" });
   }
 });
 
