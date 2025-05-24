@@ -11,6 +11,7 @@ const Book = require('./models/book');
 
 require('./models/associations');
 const userBookRoutes = require('./routes/userBookRoutes');
+const bookRoutes = require('./routes/books');
 
 
 dotenv.config();
@@ -163,6 +164,9 @@ app.post('/recommendations', async (req, res) => {
 });
 
 app.use('/user-books', userBookRoutes);
+
+app.use('/api/books', bookRoutes);
+
 
 const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {

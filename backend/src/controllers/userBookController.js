@@ -69,7 +69,7 @@ const removeUserBook = async (req, res) => {
 
   try {
     await UserBook.update(
-      { status: reason },  // Ej: removed_not_interested
+      { status: reason },  
       { where: { userId, bookId } }
     );
 
