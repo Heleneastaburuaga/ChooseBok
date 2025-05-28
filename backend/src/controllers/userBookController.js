@@ -81,8 +81,33 @@ const removeUserBook = async (req, res) => {
   }
 };
 
+const updateSwipeStats = async (req, res) => {
+  const { userId } = req.params;
+  const { isLike } = req.body;
+
+  try {
+    const user = await User.findByPk(userId);
+    if (!user) {
+      return res.status(404).json({ success: false, message: 'User not found' });
+    }
+
+    user.totalSwipes += 1;
+    if (isLike) {
+      user.likeSwipes += 1;
+    }
+
+    await user.save();
+
+    res.json({ success: true, message: 'Swipe counters updated' });
+  } catch (error) {
+    console.error("Error updating swipe stats:", error.message);
+    res.status(500).json({ success: false, message: 'Failed to update swipe stats' });
+  }
+};
+
 module.exports = {
   addUserBook,
   getUserBooksByStatus,
   removeUserBook,
+  updateSwipeStats,
 };

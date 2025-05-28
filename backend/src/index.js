@@ -12,6 +12,7 @@ const Book = require('./models/book');
 require('./models/associations');
 const userBookRoutes = require('./routes/userBookRoutes');
 const bookRoutes = require('./routes/books');
+const statsRoutes = require('./routes/stats');
 
 
 dotenv.config();
@@ -163,9 +164,21 @@ app.post('/recommendations', async (req, res) => {
   }
 });
 
+app.get('/user-books/user/:userId/book/:bookId', async (req, res) => {
+  const { userId, bookId } = req.params;
+  const record = await UserBook.findOne({ where: { userId, bookId } });
+  if (record) {
+    res.json({ exists: true, status: record.status });
+  } else {
+    res.json({ exists: false });
+  }
+});
+
 app.use('/user-books', userBookRoutes);
 
 app.use('/api/books', bookRoutes);
+
+app.use('/api', statsRoutes);
 
 
 const PORT = process.env.PORT || 3001;

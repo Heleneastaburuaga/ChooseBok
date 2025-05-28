@@ -30,6 +30,16 @@ const User = sequelize.define('User', {
     set(val) {
       this.setDataValue('favoriteGenres', JSON.stringify(val));
     },
+  },
+    totalSwipes: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+    defaultValue: 0,
+  },
+  likeSwipes: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+    defaultValue: 0,
   }
 }, {
   tableName: 'users',
