@@ -11,7 +11,7 @@ const Book = require('./models/book');
 
 require('./models/associations');
 const userBookRoutes = require('./routes/userBookRoutes');
-const bookRoutes = require('./routes/books');
+const bookRoutes = require('./config/books');
 const statsRoutes = require('./routes/stats');
 
 

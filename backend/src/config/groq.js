@@ -59,13 +59,15 @@ async function getPersonalizedRecommendations(age, genres, likedBooks, dislikedB
     - Do NOT include any books already mentioned above.
     - Only include standalone books or the first book in a series (no sequels or later books).
     - Include 4 books aligned with their preferred genres and 1 that slightly deviates from their usual taste, based on their age.
-    - Return ONLY the titles. No numbers, no bullet points, no quotes, no summaries — just one title per line.`
+    - Return ONLY the titles. No numbers, no bullet points, no quotes, no summaries — just one title per line.
+    - Don't justify your answer, just titles.`
+
 
   try {
     const response = await openai.chat.completions.create({
       model: 'llama-3.3-70b-versatile',
       messages: [{ role: 'user', content: prompt }],
-      temperature: 0.3,
+      temperature: 0.1,
     });
     const text = response.choices[0].message.content;
     const titles = text
