@@ -15,7 +15,7 @@ async function getInitialRecommendations(age, genres) {
     const response = await openai.chat.completions.create({
       model: 'llama-3.3-70b-versatile',
       messages: [{ role: 'user', content: prompt }],
-      temperature: 0.7,
+      temperature: 0.6,
     });
 
     const text = response.choices[0].message.content;
@@ -31,16 +31,12 @@ async function getInitialRecommendations(age, genres) {
 }
 
 async function getPersonalizedRecommendations(age, genres, likedBooks, dislikedBooks, wantToRead, notInterested) {
-  console.log(" Liked books:", likedBooks);
-  console.log(" Disliked books:", dislikedBooks);
-  console.log("Want to Read:", wantToRead);
-  console.log("Not Interested:", notInterested);
   const prompt = `You are a book recommender AI.
 
     User profile:
     - Age: ${age}
     - Favorite genres: ${genres.join(", ")}
-    -Note: The favorite genres are independent. Recommendations can include books from any of these genres individually or in combination.
+    -Note: Favorite genres are independent;
 
     Books they liked:
     ${likedBooks.join("\n")}
@@ -54,14 +50,12 @@ async function getPersonalizedRecommendations(age, genres, likedBooks, dislikedB
     Books they are not interested in:
     ${notInterested.join("\n")}
 
-
     Based on this information, recommend exactly 5 new book titles the user might like:
     - Do NOT include any books already mentioned above.
-    - Only include standalone books or the first book in a series (no sequels or later books).
-    - Include 4 books aligned with their preferred genres and 1 that slightly deviates from their usual taste, based on their age.
-    - Return ONLY the titles. No numbers, no bullet points, no quotes, no summaries — just one title per line.
-    - Don't justify your answer, just titles.`
-
+    - Include 4 books aligned with their favorite genres.
+    - Include 1 book that is somewhat different from their usual tastes.
+    - Return ONLY the titles, one per line.
+    - Do NOT include numbers, bullet points, quotes, or descriptions.`
 
   try {
     const response = await openai.chat.completions.create({

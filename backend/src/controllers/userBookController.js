@@ -105,9 +105,20 @@ const updateSwipeStats = async (req, res) => {
   }
 };
 
+const findRelation = async (req, res) => {
+  const { userId, bookId } = req.params;
+  const record = await UserBook.findOne({ where: { userId, bookId } });
+  if (record) {
+    res.json({ exists: true, status: record.status });
+  } else {
+    res.json({ exists: false });
+  }
+};
+
 module.exports = {
   addUserBook,
   getUserBooksByStatus,
   removeUserBook,
   updateSwipeStats,
+  findRelation,
 };
