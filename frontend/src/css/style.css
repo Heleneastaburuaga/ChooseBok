@@ -1,0 +1,49 @@
+@import './loginSignUp.css';
+@import './datuak.css';
+@import './menu.css';
+@import './LiburutegiaBilatu.css';
+@import './home.css';
+@import './bookInfo.css';
+
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Calibri';
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #D5B893;
+}
+
+
+h1 {
+  text-align: center;
+  margin-top: 20px;
+}
+
+h2 {
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+.mainhome-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.book-title {
+  margin-top: 10px;
+  font-weight: bold;
+  font-size: 14px;
+}
+
+
+
+

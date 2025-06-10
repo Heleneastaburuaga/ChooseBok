@@ -1,0 +1,76 @@
+.stats-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: auto auto;
+  grid-template-areas:
+    "progreso generos"
+    "autor swipes";
+  gap: 20px;
+  padding: 20px;
+}
+
+.card {
+  background: #f9f9f9;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgb(0 0 0 / 0.1);
+  padding: 20px;
+}
+
+.bar-chart-container {
+  margin-top:70px;
+}
+
+ol {
+  padding-left: 20px;
+  margin: 0;
+}
+
+ol li {
+  margin-bottom: 6px;
+  font-size: 1rem;
+}
+
+.author-name {
+  font-size: 1.2rem;
+  font-weight: bold;
+  margin-top: 10px;
+  text-align: center;
+  display: block;
+}
+
+.genre-content {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+}
+
+.swipe-card {
+  display: flex;
+  flex-direction: column;
+  padding: 1rem;
+}
+
+.swipe-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.mini-stat {
+  padding: 1rem;
+  border-radius: 10px;
+  text-align: center;
+  background-color: #617891;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+  transition: transform 0.2s ease;
+}
+
+
+.author-icon {
+  margin-top:15px;
+  font-size: 4rem;
+  line-height: 1;
+  text-align: center; 
+  width: 100%;
+}

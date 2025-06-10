@@ -1,0 +1,172 @@
+.grid-container {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  grid-template-rows: repeat(2, 1fr);
+  gap: 20px;
+  padding: 20px;
+}
+
+.book-slot {
+  border: 1px solid #ddd;
+  padding: 10px;
+  text-align: center;
+  position: relative;
+  min-height: 250px;
+  min-width:170px;
+  max-width: 1100px;
+  background-color: #f9f9f9;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.book-image {
+  max-width: 100px;
+  max-height: 150px;
+  object-fit: contain;
+}
+
+.empty-slot {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #aaa;
+  font-style: italic;
+}
+
+.remove-x {
+  position: absolute;
+  top: 6px;
+  right: 8px;
+  cursor: pointer;
+  font-size: 18px;
+  color: red;
+}
+
+.remove-reasons {
+  position: absolute;
+  top: 30px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: white;
+  border: 1px solid #ccc;
+  padding: 10px;
+  z-index: 10;
+  width: 180px;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.remove-reasons button {
+  display: block;
+  width: 100%;
+  margin-bottom: 6px;
+  background: #eee;
+  border: none;
+  padding: 6px;
+  cursor: pointer;
+  font-size: 12px;
+  border-radius: 4px;
+}
+
+
+.like-serch {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  cursor: pointer;
+  font-size: 20px;
+  color: #333;
+  user-select: none;
+  z-index: 10;
+}
+
+.see-more {
+  position: absolute;
+  top: 5px;
+  left: 5px;
+  cursor: pointer;
+  font-size: 20px;
+  color: #333;
+  user-select: none;
+  z-index: 10;
+}
+
+
+.read-like-see-buttom{
+  margin: 0 auto;
+  display: block;
+  padding: 10px 20px;
+  font-size: 0.9rem;
+  background-color: white;
+  color: black;
+  border: none;
+  border-radius: 12px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  cursor: pointer;
+  margin-top: 20px;
+}
+
+.scroll-grid-container {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 20px;
+  padding: 20px;
+  max-height: 550px;
+  max-width: 1100px;
+  overflow-y: auto;
+}
+
+
+.input-bilatu {
+  padding: 12px 16px;
+  width: 200px;
+  border: 2px solid #ccc;
+  border-radius: 8px;
+  font-size: 16px;
+  margin-top: 10px;
+}
+
+.bilatu-btn{
+  margin: 0 auto;
+  display: block;
+  padding: 10px 20px;
+  font-size: 0.9rem;
+  background-color: white;
+  color: black;
+  border: none;
+  border-radius: 12px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  cursor: pointer;
+  margin-top: 10px;
+  margin-bottom: 15px;
+}
+
+.add-options {
+  position: absolute;
+  top: 30px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: white;
+  border: 1px solid #ccc;
+  padding: 10px;
+  z-index: 10;
+  width: 180px;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.add-options button {
+  display: block;
+  width: 100%;
+  margin-bottom: 6px;
+  background: #eee;
+  border: none;
+  padding: 6px;
+  cursor: pointer;
+  font-size: 12px;
+  border-radius: 4px;
+}
