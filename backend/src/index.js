@@ -7,7 +7,7 @@ require('./models/associations');
 const userBookRoutes = require('./routes/userBookRoutes');
 const bookRoutes = require('./config/books');
 const statsRoutes = require('./routes/stats');
-const userRoutes = require('./routes/userRouters'); 
+const userRoutes = require('./routes/userRouters.js'); 
 
 dotenv.config();
 connectDB();

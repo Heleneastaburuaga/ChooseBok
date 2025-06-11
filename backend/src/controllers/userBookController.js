@@ -7,12 +7,20 @@ const addUserBook = async (req, res) => {
   if (!bookData.id) {
     return res.status(400).json({ success: false, message: 'Falta el ID del libro (bookData.id)' });
   }
+    const titleNorm = bookData.title
+    ?.toLowerCase()
+    .normalize("NFD").replace(/[\u0300-\u036f]/g, "") 
+    .replace(/[“”"'`´]/g, "")                   
+    .replace(/[^a-z0-9\s]/gi, "")        
+    .replace(/\s+/g, " ")                            
+    .trim();
 
   try {
     const [book] = await Book.findOrCreate({
       where: { id: bookData.id },
       defaults: {
         title: bookData.title,
+        title_normalized: titleNorm,
         author: bookData.author,
         year: bookData.year,
         description: bookData.description || '',

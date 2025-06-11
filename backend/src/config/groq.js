@@ -55,9 +55,10 @@ async function getPersonalizedRecommendations(age, genres, likedBooks, dislikedB
     - Include 4 books aligned with their favorite genres.
     - Include 1 book that is somewhat different from their usual tastes.
     - Return ONLY the titles, one per line.
-    - Do NOT include numbers, bullet points, quotes, or descriptions.`
+    - Do NOT recomendation reason.`
 
   try {
+    console.log(prompt)
     const response = await openai.chat.completions.create({
       model: 'llama-3.3-70b-versatile',
       messages: [{ role: 'user', content: prompt }],

@@ -11,16 +11,16 @@ export const fetchBookDetails = async (title) => {
     if (!book) return null;
 
     return {
-      title: book.title || "Ezezaguna",
-      authors: book.authors?.join(", ") || "Ezezaguna",
-      publishedDate: book.publishedDate || "Ezezaguna",
-      description: book.description || "Ezezaguna",
-      categories: book.categories?.join(", ") || "Ezezaguna",
+      title: book.title || "Unknown",
+      authors: book.authors?.join(", ") || "Unknown",
+      publishedDate: book.publishedDate || "Unknown",
+      description: book.description || "Unknown",
+      categories: book.categories?.join(", ") || "Unknown",
       image: book.imageLinks?.thumbnail || null,
       id:item.id,
     };
   } catch (err) {
-    console.error("Error al buscar libro:", err.message);
+    console.error("Error searching for book:", err.message);
     return null;
   }
 };

@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import '../css/style.css';
+import { Link } from 'react-router-dom';  
+
 
 
 function Signup() {
@@ -91,6 +93,9 @@ function Signup() {
         </div>
         <button className="submit-btn" type="submit">Register</button>
       </form>
+        <div className="signup-link">
+        <p>You have an account? <Link to="/">Login</Link></p>
+      </div>
     </div>
   );
 }

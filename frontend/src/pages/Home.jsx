@@ -31,7 +31,7 @@ const Home = () => {
           fetchAndSetBookInfo(firstTitle);
         }
       } catch (err) {
-        console.error("Error al obtener recomendaciones:", err.message);
+         alert("The daily recommendation limit has been reached. Please try again later.");
       }
     };
 
@@ -40,46 +40,67 @@ const Home = () => {
 
   const fetchAndSetBookInfo = async (title) => {
     const info = await fetchBookDetails(title);
+      if (!info?.image) {
+        nextBook();
+        return;
+    }
     setBookInfo(info);
-    console.log("Detalles del libro:", info);
   };
 
 const nextBook = async () => {
-  const nextIndex = currentBookIndex + 1;
+  const userId = sessionStorage.getItem("userId");
+  if (!userId) return;
 
-  if (nextIndex < books.length) {
+  let nextIndex = currentBookIndex + 1;
+
+  while (nextIndex < books.length) {
     const nextTitle = books[nextIndex];
-    setCurrentBookIndex(nextIndex);
-    setBookTitle(nextTitle);
-    fetchAndSetBookInfo(nextTitle);
-  } else {
+    const info = await fetchBookDetails(nextTitle);
 
-    const userId = sessionStorage.getItem("userId");
-    if (!userId) return;
+    if (info?.image) {
+      setCurrentBookIndex(nextIndex);
+      setBookTitle(nextTitle);
+      setBookInfo(info);
+      return;
+    }
 
-    try {
-      const res = await axios.post(`${process.env.REACT_APP_API_URL}/api/users/recommendations`, {
-        userId,
-      });
-      console.log("Respuesta de recomendaciones:", res.data);
+    nextIndex++;
+  }
 
-      if (res.data.success && res.data.books.length > 0) {
-        setBooks(res.data.books);
-        setCurrentBookIndex(0);
-        const newTitle = res.data.books[0];
-        setBookTitle(newTitle);
-        fetchAndSetBookInfo(newTitle);
-      } else {
-        console.log("No se pudieron obtener más recomendaciones.");
+  try {
+    const res = await axios.post(`${process.env.REACT_APP_API_URL}/api/users/recommendations`, {
+      userId,
+    });
+    if (res.data.success && res.data.books.length > 0) {
+      const newBooks = res.data.books;
+      let found = false;
+
+      for (let i = 0; i < newBooks.length; i++) {
+        const title = newBooks[i];
+        const info = await fetchBookDetails(title);
+        if (info?.image) {
+
+          setBooks(newBooks);
+          setCurrentBookIndex(i);
+          setBookTitle(title);
+          setBookInfo(info);
+          found = true;
+          break;
+        }
+      }
+
+      if (!found) {
         setBookTitle('');
         setBookInfo(null);
       }
-    } catch (err) {
-      console.error("Error al obtener nuevas recomendaciones:", err.message);
-      //aqui poner algo cuando se pasa la ia
+    } else {
       setBookTitle('');
       setBookInfo(null);
     }
+  } catch (err) {
+      alert("The daily recommendation limit has been reached. Please try again later.");
+      setBookTitle('');
+      setBookInfo(null);
   }
 };
 
@@ -92,13 +113,13 @@ const updateSwipeStats = async (isLike) => {
       isLike, 
     });
   } catch (err) {
-    console.error("Error actualizando swipe stats:", err.message);
+    console.error("Error updating swipe stats:", err.message);
   }
 };
 
  const handleAddUserBook = async (status) => {
     const userId = sessionStorage.getItem("userId");
-    if (!userId) return alert("No estás logueado");
+    if (!userId) return alert("You are not log");
 
     if (bookInfo!=null) {
       const book = {
@@ -120,12 +141,11 @@ const updateSwipeStats = async (isLike) => {
       try {
         const res = await axios.post(`${process.env.REACT_APP_API_URL}/user-books`, payload);
         if (res.data.success) {
-          console.log('Libro guardado con éxito');
         } else {
-          console.log('Error al guardar el libro');
+          console.log('Error saving the workbook');
         }
       } catch (error) {
-        console.error("Error guardando libro del usuario:", error);
+        console.error("Error saving user book:", error);
       }
     }
   };
@@ -167,7 +187,7 @@ const updateSwipeStats = async (isLike) => {
     <Menu />
     <div className="mainhome-container">
       <div className="book-title">
-        <h2>{bookTitle}</h2>
+        <h2>{bookInfo?.title || bookTitle}</h2>
         {bookInfo?.image && (
           <div className="image">
             <img src={bookInfo.image} alt="Portada del libro" className="book-img" />

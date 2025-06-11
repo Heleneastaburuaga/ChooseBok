@@ -99,25 +99,25 @@ const getRecommendations = async (req, res) => {
       where: { userId },
       include: [{
         model: Book,
-        attributes: ['id', 'title']  
+        attributes: ['id', 'title', 'title_normalized'] 
       }]
     });
 
     const likedBooks = allUserBooks
       .filter(ub => ub.status === 'read_liked')
-      .map(ub => ub.Book?.title);
+      .map(ub => ub.Book?.title_normalized);
 
     const dislikedBooks = allUserBooks
       .filter(ub => ub.status === 'read_disliked')
-      .map(ub => ub.Book?.title);
+      .map(ub => ub.Book?.title_normalized);
 
     const wantToRead = allUserBooks
       .filter(ub => ub.status === 'want_to_read')
-      .map(ub => ub.Book?.title);
+      .map(ub => ub.Book?.title_normalized);
 
     const notInterested = allUserBooks
       .filter(ub => ub.status === 'not_interested')
-      .map(ub => ub.Book?.title);
+      .map(ub => ub.Book?.title_normalized);
 
     const hasHistory = likedBooks.length || dislikedBooks.length || wantToRead.length || notInterested.length;
 
@@ -127,8 +127,7 @@ const getRecommendations = async (req, res) => {
 
     res.json({ success: true, books });
   } catch (err) {
-    console.error("Error recommending books:", err.message);
-    res.status(500).json({ success: false, message: "Failed to get recommendations" });
+      res.status(500).json({ success: false, message: "Failed to get recommendations" });
   }
 };
 
