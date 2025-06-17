@@ -46,8 +46,8 @@ const Datuak = () => {
       });
   }, [userId]);
 
-  if (loading) return <div>Cargando estadísticas...</div>;
-  if (!userId) return <div>No estás logueado.</div>;
+  if (loading) return <div>Loading statistics...</div>;
+  if (!userId) return <div>You are not logged in.</div>;
 
   const genreRanking = stats.genresReadBreakdown
   ? Object.entries(stats.genresReadBreakdown)

@@ -15,92 +15,83 @@ const Home = () => {
   const [showInfoLaukia, setShowInfoLaukia] = useState(false);
   
   useEffect(() => {
-    const fetchRecommendations = async () => {
-      const userId = sessionStorage.getItem("userId");
-      if (!userId) return;
-      
-      try {
-        const res = await axios.post(`${process.env.REACT_APP_API_URL}/api/users/recommendations`, {
-          userId,
-        });
+  const fetchInitialBook = async () => {
+    const userId = sessionStorage.getItem("userId");
+    if (!userId) return;
 
-        if (res.data.success) {
-          setBooks(res.data.books); 
-          const firstTitle = res.data.books[0];
-          setBookTitle(firstTitle);
-          fetchAndSetBookInfo(firstTitle);
+    try {
+      const res = await axios.post(`${process.env.REACT_APP_API_URL}/api/users/recommendations`, {
+        userId,
+      });
+
+      if (res.data.success && res.data.books.length > 0) {
+        const validBook = await findNextValidBook(res.data.books);
+        if (validBook) {
+          setBooks(res.data.books);
+          setCurrentBookIndex(validBook.index);
+          setBookTitle(validBook.title);
+          setBookInfo(validBook.info);
+        } else {
+          setBookTitle('');
+          setBookInfo(null);
         }
-      } catch (err) {
-         alert("The daily recommendation limit has been reached. Please try again later.");
       }
-    };
-
-    fetchRecommendations();
-  }, []);
-
-  const fetchAndSetBookInfo = async (title) => {
-    const info = await fetchBookDetails(title);
-      if (!info?.image) {
-        nextBook();
-        return;
+    } catch (err) {
+      alert("The daily recommendation limit has been reached. Please try again later.");
     }
-    setBookInfo(info);
   };
 
+  fetchInitialBook();
+}, []);
+
+const findNextValidBook = async (bookList, startIndex = 0) => {
+  for (let i = startIndex; i < bookList.length; i++) {
+    const title = bookList[i];
+    const info = await fetchBookDetails(title);
+    if (info?.image) {
+      return { index: i, title, info };
+    }
+  }
+  return null;
+};
+
+ 
 const nextBook = async () => {
   const userId = sessionStorage.getItem("userId");
   if (!userId) return;
 
-  let nextIndex = currentBookIndex + 1;
+  const next = await findNextValidBook(books, currentBookIndex + 1);
 
-  while (nextIndex < books.length) {
-    const nextTitle = books[nextIndex];
-    const info = await fetchBookDetails(nextTitle);
+  if (next) {
+    setCurrentBookIndex(next.index);
+    setBookTitle(next.title);
+    setBookInfo(next.info);
+  } else {
+    try {
+      const res = await axios.post(`${process.env.REACT_APP_API_URL}/api/users/recommendations`, {
+        userId,
+      });
 
-    if (info?.image) {
-      setCurrentBookIndex(nextIndex);
-      setBookTitle(nextTitle);
-      setBookInfo(info);
-      return;
-    }
-
-    nextIndex++;
-  }
-
-  try {
-    const res = await axios.post(`${process.env.REACT_APP_API_URL}/api/users/recommendations`, {
-      userId,
-    });
-    if (res.data.success && res.data.books.length > 0) {
-      const newBooks = res.data.books;
-      let found = false;
-
-      for (let i = 0; i < newBooks.length; i++) {
-        const title = newBooks[i];
-        const info = await fetchBookDetails(title);
-        if (info?.image) {
-
-          setBooks(newBooks);
-          setCurrentBookIndex(i);
-          setBookTitle(title);
-          setBookInfo(info);
-          found = true;
-          break;
+      if (res.data.success && res.data.books.length > 0) {
+        const validBook = await findNextValidBook(res.data.books);
+        if (validBook) {
+          setBooks(res.data.books);
+          setCurrentBookIndex(validBook.index);
+          setBookTitle(validBook.title);
+          setBookInfo(validBook.info);
+        } else {
+          setBookTitle('');
+          setBookInfo(null);
         }
-      }
-
-      if (!found) {
+      } else {
         setBookTitle('');
         setBookInfo(null);
       }
-    } else {
-      setBookTitle('');
-      setBookInfo(null);
-    }
-  } catch (err) {
+    } catch (err) {
       alert("The daily recommendation limit has been reached. Please try again later.");
       setBookTitle('');
       setBookInfo(null);
+    }
   }
 };
 
