@@ -10,11 +10,14 @@ const statsRoutes = require('./routes/stats');
 const userRoutes = require('./routes/userRouters.js'); 
 
 dotenv.config();
-connectDB();
 
-sequelize.sync() 
-  .then(() => console.log("Tablas sincronizadas"))
-  .catch((err) => console.error("Error al sincronizar tablas:", err));
+if (process.env.NODE_ENV !== 'test') {
+  connectDB();
+
+  sequelize.sync()
+    .then(() => console.log("Tablas sincronizadas"))
+    .catch((err) => console.error("Error al sincronizar tablas:", err));
+}
 
 const app = express();
 
@@ -38,11 +41,9 @@ app.use('/api/books', bookRoutes);
 
 app.use('/api', statsRoutes);
 
+module.exports = app;
 
-const PORT = process.env.PORT || 3001;
-app.listen(PORT, () => {
-  console.log(`Server running on http://localhost:${PORT}`);
-
-});
-
-
+if (require.main === module && process.env.NODE_ENV !== 'test') {
+  const PORT = process.env.PORT || 3001;
+  app.listen(PORT, () => console.log(`Servidor en http://localhost:${PORT}`));
+}

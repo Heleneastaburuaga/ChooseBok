@@ -1,7 +1,7 @@
 module.exports = {
   testEnvironment: "jsdom",
   transformIgnorePatterns: [
-    "/node_modules/(?!axios)/" // *no* ignorar axios, transpílalo con Babel
+    "/node_modules/(?!axios)/"
   ],
   transform: {
     "^.+\\.[jt]sx?$": "babel-jest"
