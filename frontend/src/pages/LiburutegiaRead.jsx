@@ -31,16 +31,16 @@ const loadBooks = async () => {
   setVisibleCount(10);
 };
 
+ const handleScroll = useCallback(() => {
+  const container = containerRef.current;
+  if (!container) return;
 
-
-  const handleScroll = useCallback(() => {
-    const container = containerRef.current;
-    if (!container) return;
-
-    if (container.scrollTop + container.clientHeight >= container.scrollHeight - 10) {
-      setVisibleCount(prev => Math.min(prev + 5, books.length));
+  if (container.scrollTop + container.clientHeight >= container.scrollHeight - 10) {
+    if (books.length > visibleCount) {
+      setVisibleCount(prev => prev + 5);
     }
-  }, [books]);
+  }
+}, [books, visibleCount]);
 
   useEffect(() => {
     loadBooks();
@@ -54,11 +54,10 @@ const loadBooks = async () => {
       }
     }, [handleScroll]);
 
-    const displayedBooks = books.slice(0, visibleCount);
-    while (displayedBooks.length < visibleCount) {
-      displayedBooks.push(null);
-    }
-
+    const displayedBooks = [
+      ...books.slice(0, visibleCount),
+      ...Array(Math.max(0, visibleCount - books.length)).fill(null),
+    ];
 
   return (
     <>
