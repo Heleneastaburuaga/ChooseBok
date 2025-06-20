@@ -58,7 +58,6 @@ async function getPersonalizedRecommendations(age, genres, likedBooks, dislikedB
     - Do NOT recomendation reason.`
 
   try {
-    console.log(prompt)
     const response = await openai.chat.completions.create({
       model: 'llama-3.3-70b-versatile',
       messages: [{ role: 'user', content: prompt }],
