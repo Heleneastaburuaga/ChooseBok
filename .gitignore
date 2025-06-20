@@ -10,7 +10,6 @@ backend/build/
 *.log
 
 # Environment variables
-frontend/.env*
 backend/.env*
 
 # OS files
