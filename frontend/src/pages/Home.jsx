@@ -133,7 +133,7 @@ const updateSwipeStats = async (isLike) => {
         const res = await axios.post(`${process.env.REACT_APP_API_URL}/user-books`, payload);
         if (res.data.success) {
         } else {
-          console.log('Error saving the workbook');
+          console.log('Errorea liburua gordetzian');
         }
       } catch (error) {
         console.error("Error saving user book:", error);

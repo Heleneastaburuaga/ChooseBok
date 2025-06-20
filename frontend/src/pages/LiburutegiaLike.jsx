@@ -57,7 +57,7 @@ const LiburutegiaLike = () => {
         await loadBooks();
         setShowReasonsFor(null);
       } else {
-        console.log('Error al eliminar el libro');
+        console.log('Liburua ezabatzean');
       }
     } catch (error) {
       console.error("Error eliminando libro del usuario:", error);

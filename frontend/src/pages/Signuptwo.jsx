@@ -33,7 +33,6 @@ function Signup2() {
         favoriteGenres: selectedGenres,
       });
       if (response.data.success) {
-        console.log('Datos guardados correctamente');
         navigate('/');  
       } else {
         console.error("Error al guardar los géneros:", response.data.message);

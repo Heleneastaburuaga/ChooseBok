@@ -51,7 +51,6 @@ function Bilatu () {
     const handleAddBook = async (book, status) => {
         const userId = sessionStorage.getItem("userId");
         if (!userId) {
-            console.log("Not logged in");
             return;
         }
 
@@ -89,8 +88,6 @@ function Bilatu () {
 
             if (res.data.success) {
                 alert("Booak Add'.");
-
-                console.log("Book add");
             } else {
                 alert("Error adding book.");
             }
